@@ -3,7 +3,7 @@
 Create 1 million synthetic trades, inject them into a Redis cache and process them with containerized application code on Azure Batch, capturing Telemetry in Application Insights, and output logs in Azure BLOB Storage. 
 
 # Overview
-azfinsim is a reference implementation for automated deployment of containerized Azure Batch applications. While the application provided is a synthetic risk simulation designed to demonstrate high throughput in a financial risk/grid scenario, the actual framework is generic enough to be applied to any embarrassingly parallel / high-throughput computing style scenario. If you have a large scale computing challenge to solve, deploying this example is a good place to start, and once running it's easy enough to insert your own code and libraries in place of azfinsim. 
+ AzFinSim is a reference implementation for automated deployment of containerized Azure Batch applications which scales to 10's of thousands of cores. While the application provided is a synthetic risk simulation designed to demonstrate high throughput in a financial risk/grid scenario, the actual framework is generic enough to be applied to any embarrassingly parallel / high-throughput computing style scenario. If you have a large scale computing challenge to solve, deploying this example is a good place to start, and once running it's easy enough to insert your own code and libraries in place of azfinsim. 
 
 <img src="img/arch.JPG"> 
 
