@@ -213,7 +213,7 @@ This is work in progress...
 
 ## Known Issues
 
-* This example is intended to be demo quality, not production quality, and uses public endpoints for simplicity and convenience. A more secure version of the example will be made available shortly utilizing private endpoints. 
+* This example is intended to be demo quality, not production quality, and uses public endpoints for simplicity and convenience. A further example will be made available shortly utilizing private endpoints. 
 * The terraform deploy fails to ceate the service principal from time to time - this issue appears transient, so just delete the resource group and redeploy. Error: <i>"When using this permission, the backing application of the service principal being created must in the local tenant"</i>
 
 ## Roadmap
