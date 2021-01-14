@@ -24,7 +24,7 @@ az login
 cd bin; ./deploy.sh
 
 # Generate 1,000,000 synthetic trades and inject into the redis cache [~60 minutes]
-./generate.sh
+./generator.sh
 
 # Build the application container and push to the azure container registry [~3 minutes]
 ./build.sh
@@ -136,7 +136,7 @@ To authenticate with either of these tools you'll need the hostname or IP of you
 Just click on the AzFinSimRedisKey, current version and "Show Secret Value" - this is the password you need to login to Redis. Note also that the Terraform install has disabled the non-SSL port, so connect to port 6380. A script is also provided: "get_keys.sh" to make this easier. 
 
 ## 3. Build the Application Container
-The next step requires us to assemble the application into a container and push it to our container registry, so that it can subsequently be pulled into our Batch Pool. The application can be anything; in this case the azfinsim application is built in pythong, and we will package it up into a Docker container. The build.sh script does this according to the src/Dockerfile.azfinsim, creating a runtime environment for the azfinsim.py code which will be our execution engine on the Batch pool: 
+The next step requires us to assemble the application into a container and push it to our container registry, so that it can subsequently be pulled into our Batch Pool. The application can be anything; in this case the azfinsim application is built in python, and we will package it up into a Docker container. The build.sh script does this according to the src/Dockerfile.azfinsim, creating a runtime environment for the azfinsim.py code which will be our execution engine on the Batch pool: 
 ```
 cd bin; ./build.sh
 ```
