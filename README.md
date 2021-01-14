@@ -53,11 +53,9 @@ Telemetry is captured with Application Insights, and viewable in the <a href="ht
 ## Tools
 Get <a href="https://azure.github.io/BatchExplorer/">Batch Explorer</a>, and login to your Azure account via the UI. 
 
-The linux shell you launch the azfinsim commands above from needs to have the following utilities installed: <a href="/en-us/cli/azure/install-azure-cli" data-linktype="absolute-path">Azure CLI</a>, docker-ce, terraform, jq & git.
+For launching the azfinsim commands above you need a Linux shell with the following utilities installed: <a href="/en-us/cli/azure/install-azure-cli" data-linktype="absolute-path">Azure CLI</a>, docker-ce, terraform, jq & git - ubuntu 20.04 on WSL2 is highly recommended. 
 
-For ease of use <a href=https://shell.azure.com/Azure> Azure Cloud Shell</a> is recommended, as it has all of these tools installed already: 
-If you prefer, install the
-   a Linux machine. You can even run the whole thing from WSL2 on your Windows laptop.
+<a href=https://shell.azure.com/Azure> Azure Cloud Shell</a> is also a convenient launchpad for azfinsim, as it has all of these tools installed already: 
 
 <p><a href="https://shell.azure.com" data-linktype="external"><img src="img/launchcloudshell.png" alt="Embed launch" title="Launch Azure Cloud Shell" data-linktype="external"/></a></p>
 
@@ -82,7 +80,7 @@ The deploy.sh script does the following:
 1) Registers the azfinsim application with AAD and creates a Service Principal and secret for the application to authenticate. 
 2) Deploy the infrastructure in the diagram above using Terraform
       1) A VNET & Subnet for our Batch Pool machines 
-      2) A Azure Keyvault for storing secrets such as our Redis & Container Registry passwords
+      2) A Keyvault for storing secrets such as our Redis & Container Registry passwords
       3) An Azure Redis Cache Premium Tier 6GB for storing the trade data
       4) An Azure Container Registry Premium Tier for our Docker Container(s)
       5) An Azure Batch Account in User Subscription Mode with two pools: 
@@ -108,11 +106,15 @@ NB: Be careful how you manage both the terraform.tfstate and the azfinsim.config
 
 ## 2. Generate the Synthetic Trade Data
 
-For the Batch work we'll pre-fill the cache with trades (simulating an end of trading day data upload). We do this with the generator.sh script, which will PUT the trades directly into the Redis Cache. You can configure the generator.sh script to create as many trades as you like, and select the number of threads to speed things up as required. Example output creating 5 trades: 
+For the Batch work we'll pre-fill the cache with trades (simulating an end of trading day data upload). We do this with the generator.sh script, which will PUT the trades directly into the Redis Cache.
+```
+cd bin; ./generator.sh
+```
+You can configure the generator.sh script to create as many trades as you like, and select the number of threads to speed things up as required. Example output creating 5 trades: 
 
 <img src=img/generator.JPG>
 
-100k trades will take around 5 mins, 1 million 45-90 minutes depending on your client and latency. 
+100k trades will take around 5 mins, 1 million ~50 minutes depending on your client and latency. 
 
 You'll also notice the number of keys stored in redis has risen to 1 million (this image form the dashboard we created with terraform): 
 
