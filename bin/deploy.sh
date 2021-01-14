@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-CONFIG="../config/azfinsim.config"
+CONFIGDIR="../config"
+CONFIG=$CONFIGDIR/azfinsim.config
 
 deploy()
 {
@@ -20,6 +21,10 @@ generate_config()
 {
     echo "Generating configuration..."
     vars=$(terraform output -json)
+
+    if [ ! -d $CONFIGDIR ]; then
+       mkdir -p $CONFIGDIR
+    fi
 
     #-- keyvault & stored secret identifiers
     AZFINSIM_KV_NAME=$(echo $vars | jq -r '.keyvault_name.value')
