@@ -53,11 +53,13 @@ Telemetry is captured with Application Insights, and viewable in the <a href="ht
 ## Tools
 Get <a href="https://azure.github.io/BatchExplorer/">Batch Explorer</a>, and login to your Azure account via the UI. 
 
-For launching the azfinsim commands above you need a Linux shell with the following utilities installed: <a href="/en-us/cli/azure/install-azure-cli" data-linktype="absolute-path">Azure CLI</a>, docker-ce, terraform, jq & git - ubuntu 20.04 on WSL2 is highly recommended. 
+For launching the azfinsim commands above you need a Linux shell with the following utilities installed: <a href="/en-us/cli/azure/install-azure-cli" data-linktype="absolute-path">Azure CLI</a>, docker-ce, terraform, jq & git - ubuntu 20.04 on WSL2 is highly recommended, or you can use any standalone Linux VM. 
 
 <a href=https://shell.azure.com/Azure> Azure Cloud Shell</a> is also a convenient launchpad for azfinsim, as it has all of these tools installed already: 
 
 <p><a href="https://shell.azure.com" data-linktype="external"><img src="img/launchcloudshell.png" alt="Embed launch" title="Launch Azure Cloud Shell" data-linktype="external"/></a></p>
+
+NB: You will not be able to run the container creation step "build.sh" from the cloud shell as it does not have docker daemon support. You'll need to run the container build on another platform as suggested above. 
 
 ## CPU Core Quota
 Cloud Computers don't grow on trees, so you'll also need to ensure sure you have sufficient <a href="https://docs.microsoft.com/en-us/azure/batch/batch-quota-limit">core quota</a> in the region you want to deploy in. The demo configuration by default uses 200 x D8s_v3 VM's, so 1600 cores. To make this simpler, we are using User Subscription Mode for Azure Batch, which means the VM's will run in the subscription and therefore we use the core quotas in your subscription, rather than Batch account specific quotas (required in "Batch Service" mode). 

@@ -1,6 +1,6 @@
 #-- name of the application (resource names will all be prefixed with this string)
 variable "prefix" {
-  default = "mkfinsim"
+  default = "azfinsim"
   description = "Prefix to use for selected resources."
   type = string
 }
