@@ -7,7 +7,7 @@ azfinsim is a reference implementation for a containerized Azure Batch applicati
 
 <img src="img/arch.JPG"> 
 
-To see azfinsim in action, please see the <a href="https://youtu.be/r5jxlwJQEPc"> youtube video</a> (slides <a href=img/slides.pdf>here</a>). 
+To see azfinsim in action, watch the <a href="https://youtu.be/r5jxlwJQEPc"> youtube video</a> (slides <a href=img/slides.pdf>here</a>). 
 
 # Quickstart
 If you just want to get it going - here's how: 
@@ -189,6 +189,7 @@ Once the jobs are finished the autoscale algorithm will reduce the pool size bac
 ### Accessing Live nodes
 
 In a dev environment it's normal to access the pool nodes to troubleshoot any issues that may be affecting the application code. Do this by selecting the pool in the Batch Explorer UI, and right-clicking on the node you wish to access:
+
 <img src="img/connect.JPG">
 
 This will automatically generate login credentials and bring up a terminal to access the pool node. At this point you can see the running job with the "top" command (each python/docker process represents one task)
@@ -211,7 +212,8 @@ This is work in progress...
 * This example is intended to be demo quality, not production quality, and uses public endpoints for simplicity and convenience. A more secure version of the example will be made available shortly utilizing private endpoints. 
 * The terraform deploy fails to ceate the service principal from time to time - this issue appears transient, so just delete the resource group and redeploy. Error: <i>"When using this permission, the backing application of the service principal being created must in the local tenant"</i>
 
-## TBD
+## Roadmap
+* Private Link
 * Harvest VM Support
 * Realtime calculations & Redis Queue 
 * Task prorities & dependencies

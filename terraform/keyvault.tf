@@ -12,21 +12,23 @@ resource "azurerm_key_vault" "azfinsim" {
   soft_delete_retention_days          = 7
   purge_protection_enabled            = false
 
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-    key_permissions = [
-    ]
-    secret_permissions = [
-      "get",
-      "set",
-      "list",
-      "delete",
-      "purge"
-    ]
-    storage_permissions = [
-    ]
-  }
+#failing on cloud shell due to object_id not resolving 
+  #access_policy {
+  #  tenant_id = data.azurerm_client_config.current.tenant_id
+  #  object_id = data.azurerm_client_config.current.object_id
+  #  key_permissions = [
+  #  ]
+  #  secret_permissions = [
+  #    "get",
+  #    "set",
+  #    "list",
+  #    "delete",
+  #    "purge"
+  #  ]
+  #  storage_permissions = [
+  #  ]
+  #}
+
   #-- delegate access to azfinsim service principal
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
