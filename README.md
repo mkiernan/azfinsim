@@ -1,4 +1,4 @@
-# Fintech Risk Simulation for the Azure Batch Container Platform: azfinsim
+# AzFinSim: Fintech Risk Simulation for the Azure Batch Container Platform
 
 Create 1 million synthetic trades, inject them into a Redis cache and process them with containerized application code on Azure Batch, capturing Telemetry in Application Insights, and output logs in Azure BLOB Storage. 
 
