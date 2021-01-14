@@ -2,7 +2,6 @@
 
 Create 1 million synthetic trades, inject them into a Redis cache and process them with containerized application code on Azure Batch, capturing Telemetry in Application Insights, and output logs in Azure BLOB Storage. 
 
-<img src=img/dashboard.JPG> 
 
 # Overview
 azfinsim is a reference implementation for a containerized Azure Batch application. While the application provided is a synthetic risk simulation designed to demonstrate high throughput in a financial risk/grid scenario, the actual framework is generic enough to be applied to any embarrassingly parallel / high-throughput computing style scenario. If you have a large scale computing challenge to solve, deploying this example is a good place to start, and once running it's easy enough to insert your own code and libraries in place of azfinsim. 
@@ -13,6 +12,8 @@ To see azfinsim in action, please see the <a href="https://youtu.be/r5jxlwJQEPc"
 
 # Quickstart
 If you just want to get it going - here's how: 
+
+## Launch 
 ```
 # Clone this github
 git clone https://github.com/mkiernan/azfinsim.git
@@ -33,11 +34,20 @@ cd bin; ./deploy.sh
 ./submit.sh 
 ```
 
-Bring up your Batch Explorer UI and you should see the batch pool has autoscaled up, and the job is running - something like this:
+## Observe 
+
+Bring up your Batch Explorer UI and you should see the batch pool has autoscaled up, and the job is running:
 
 <img src=img/pool.JPG>
 
 By default this will run 3 jobs, each processing the full 1 million trades, so 3 million PUT's & GET's from the cache. The time to run will depend directly on the amount of cores you have in your pool (1600 in the screenshot above, but you can scale MUCH larger than that...). 
+
+## Monitor 
+
+Telemetry is captured with Application Insights, and viewable in the <a href="https://ms.portal.azure.com/#dashboard">Azure Portal Dashboards</a> section.  
+
+<img src=img/dashboard.JPG> 
+
 
 # Pre-Requisites:  
 
@@ -50,7 +60,7 @@ For ease of use <a href=https://shell.azure.com/Azure> Azure Cloud Shell</a> is 
 If you prefer, install the
    a Linux machine. You can even run the whole thing from WSL2 on your Windows laptop.
 
-<p><a href="https://shell.azure.com" data-linktype="external"><img src="https://shell.azure.com/images/launchcloudshell.png" alt="Embed launch" title="Launch Azure Cloud Shell" data-linktype="external"/></a></p>
+<p><a href="https://shell.azure.com" data-linktype="external"><img src="img/launchcloudshell.png" alt="Embed launch" title="Launch Azure Cloud Shell" data-linktype="external"/></a></p>
 
 ## CPU Core Quota
 Cloud Computers don't grow on trees, so you'll also need to ensure sure you have sufficient <a href="https://docs.microsoft.com/en-us/azure/batch/batch-quota-limit">core quota</a> in the region you want to deploy in. The demo configuration by default uses 200 x D8s_v3 VM's, so 1600 cores. To make this simpler, we are using User Subscription Mode for Azure Batch, which means the VM's will run in the subscription and therefore we use the core quotas in your subscription, rather than Batch account specific quotas (required in "Batch Service" mode). 
@@ -106,6 +116,7 @@ For the Batch work we'll pre-fill the cache with trades (simulating an end of tr
 100k trades will take around 5 mins, 1 million 45-90 minutes depending on your client and latency. 
 
 You'll also notice the number of keys stored in redis has risen to 1 million (this image form the dashboard we created with terraform): 
+
 <img src=img/redispop.JPG> 
 
 ### Connecting to Azure Redis Cache
@@ -187,7 +198,7 @@ This will automatically generate login credentials and bring up a terminal to ac
 
 The logs we viewed earlier along with all the relevant batch files, the start task, and every running task are under the /mnt directory: 
 
-<img src="img/outputfiles.JPG">
+<img src="img/outputfiles.JPG" height=50%, width=80%>
 
 ## 5. Run a "Real Time" Calculation
 
@@ -199,9 +210,7 @@ This is work in progress...
 ## Known Issues
 
 * This example is intended to be demo quality, not production quality, and uses public endpoints for simplicity and convenience. A more secure version of the example will be made available shortly utilizing private endpoints. 
-* The terraform deploy is failing to create the service principal from time to time - this issue appears transient, so just delete the resource group and redeploy. Error: "When using this permission, the backing application of the service principal being created must in the local tenant"
-
-* The terraform destroy fails with keyvault no purge permissions - work in progress. 
+* The terraform deploy fails to ceate the service principal from time to time - this issue appears transient, so just delete the resource group and redeploy. Error: <i>"When using this permission, the backing application of the service principal being created must in the local tenant"</i>
 
 ## TBD
 * Harvest VM Support
