@@ -140,8 +140,12 @@ The next step requires us to assemble the application into a container and push 
 ```
 cd bin; ./build.sh
 ```
-Depending on your docker/sudo setup, the script may prompt for a root password to execute docker. 
-
+The script may prompt for a root password to execute docker commands. To avoid that, first add your user id to the docker group:
+```
+sudo usermod -aG docker
+# logout/login
+id -nG
+```
 ### Test the Application Container
 
 Once the container is built you can test it locally to ensure it is functioning, using the test_container.sh script provided - the output should look like this: 

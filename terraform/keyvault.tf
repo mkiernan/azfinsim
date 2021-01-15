@@ -7,8 +7,8 @@ resource "azurerm_key_vault" "azfinsim" {
   sku_name                            = "standard"
   enabled_for_deployment              = true
   enabled_for_template_deployment     = true
-  #-- turn on for production, not for dev/test/demo
-  soft_delete_enabled                 = true
+  #-- no longer required, enabled by default
+  #soft_delete_enabled                 = true
   soft_delete_retention_days          = 7
   purge_protection_enabled            = false
 
