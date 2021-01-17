@@ -45,8 +45,8 @@ def GenerateTrade(tradenum,nbytes):
 
     tradeformatted = "%010d" % tradenum
 
-    root = ET.Element("FINSIMTRADE")
-    trade = ET.SubElement(root, "FinsimSyntheticTradeData")
+    root = ET.Element("AZFINSIMTRADE")
+    trade = ET.SubElement(root, "AzFinsimSyntheticTradeData")
     trade.set("id",tradeformatted)
     trade.set("tradeType","SWAP")
     trade.set("process","iso")
@@ -58,10 +58,10 @@ def GenerateTrade(tradenum,nbytes):
     #print randbuf
     #print random.getrandbits(1024)
 
-    data = ET.SubElement(trade, "AdditionalData", type="finsim01")
+    data = ET.SubElement(trade, "AdditionalData", type="azfinsim01")
     data.append(CDATA(randbuf))
 
-    tdata = ET.SubElement(trade, "AdditionalData", type="finsim02")
+    tdata = ET.SubElement(trade, "AdditionalData", type="azfinsim02")
     qldata = ET.SubElement(tdata, "QuantLib")
     assets = ET.SubElement(qldata, "Assets")
     stream = ET.SubElement(assets, "swapStream")

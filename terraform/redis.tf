@@ -7,7 +7,7 @@ resource "azurerm_redis_cache" "azfinsim" {
   capacity            = 1
   family              = "P"
   sku_name            = "Premium"
-  enable_non_ssl_port = false
+  enable_non_ssl_port = true
   minimum_tls_version = "1.2"
 
   redis_configuration {

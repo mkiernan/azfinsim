@@ -3,14 +3,14 @@
 Create 1 million synthetic trades, inject them into a Redis cache and process them with containerized application code on Azure Batch, capturing Telemetry in Application Insights, and output logs in Azure BLOB Storage. 
 
 # Overview
- AzFinSim is a reference implementation for automated deployment of containerized Azure Batch applications which scales to 10's of thousands of cores. While the application provided is a synthetic risk simulation designed to demonstrate high throughput in a financial risk/grid scenario, the actual framework is generic enough to be applied to any embarrassingly parallel / high-throughput computing style scenario. If you have a large scale computing challenge to solve, deploying this example is a good place to start, and once running it's easy enough to insert your own code and libraries in place of azfinsim. 
+ AzFinSim is a reference implementation for automated deployment of containerized Azure Batch applications which scales to 10's of thousands of cores. While the application provided is a synthetic risk simulation designed to demonstrate high throughput in a financial risk/grid scenario, the actual framework is generic enough to be applied to any embarrassingly parallel / high-throughput computing style scenario. If you have a large scale computing challenge to solve, deploying this example is a good place to start, and once running it's easy enough to insert your own code and libraries in place of azfinsim. The whole deployment is enabled by terraform.
 
 <img src="img/arch.JPG"> 
 
 To see azfinsim in action, watch the <a href="https://youtu.be/r5jxlwJQEPc"> youtube video</a> (slides <a href=img/slides.pdf>here</a>). 
 
 # Quickstart
-If you just want to get it going - here's how: 
+If you just want to get it going - here's how (but do ensure you have the <a href="https://github.com/mkiernan/azfinsim#pre-requisites">pre-requisites</a> in place): 
 
 ## Launch 
 ```
@@ -29,7 +29,7 @@ cd bin; ./deploy.sh
 # Build the application container and push to the azure container registry [~3 minutes]
 ./build.sh
 
-# Submit batch jobs to process the trades [seconds]
+# Submit batch jobs to process the trades [30 seconds]
 ./submit.sh 
 
 # Tear down the infrastructure [~10 minutes]
@@ -54,18 +54,16 @@ Telemetry is captured with Application Insights, and viewable in the <a href="ht
 # Pre-Requisites:  
 
 ## Tools
-Get <a href="https://azure.github.io/BatchExplorer/">Batch Explorer</a>, and login to your Azure account via the UI. 
+Get <a href="https://azure.github.io/BatchExplorer/">Batch Explorer</a>, and <a href="https://azure.microsoft.com/en-us/features/storage-explorer/">Storage Explorer</a> and login to your Azure account via the UI's. 
 
-For launching the azfinsim commands above you need a Linux shell with the following utilities installed: <a href="/en-us/cli/azure/install-azure-cli" data-linktype="absolute-path">Azure CLI</a>, docker-ce, terraform, jq & git - ubuntu 20.04 on WSL2 is highly recommended, or you can use any standalone Linux VM. 
-
-<a href=https://shell.azure.com/Azure> Azure Cloud Shell</a> is also a convenient launchpad for azfinsim, as it has all of these tools installed already: 
+For launching the azfinsim commands above you need a Linux shell with the following utilities installed: <a href="/en-us/cli/azure/install-azure-cli" data-linktype="absolute-path">Azure CLI</a>, docker-ce, terraform, jq & git - ubuntu 20.04 on WSL2 is highly recommended, or you can use any standalone Linux VM. Another convenient launchpad for azfinsim is <a href=https://shell.azure.com/Azure> Azure Cloud Shell</a>, as it has all of these tools installed already: 
 
 <p><a href="https://shell.azure.com" data-linktype="external"><img src="img/launchcloudshell.png" alt="Embed launch" title="Launch Azure Cloud Shell" data-linktype="external"/></a></p>
 
-NB: You will not be able to run the container creation step "build.sh" from the cloud shell as it does not have docker daemon support. You'll need to run the container build on another platform as suggested above. 
+NB: You will not be able to run the container creation step "build.sh" from the cloud shell as it does not have docker daemon support. You'll need to run the container build on another platform where you have docker installed as suggested above. 
 
 ## CPU Core Quota
-Cloud Computers don't grow on trees, so you'll also need to ensure sure you have sufficient <a href="https://docs.microsoft.com/en-us/azure/batch/batch-quota-limit">core quota</a> in the region you want to deploy in. The demo configuration by default uses 200 x D8s_v3 VM's, so 1600 cores. To make this simpler, we are using User Subscription Mode for Azure Batch, which means the VM's will run in the subscription and therefore we use the core quotas in your subscription, rather than Batch account specific quotas (required in "Batch Service" mode). 
+Cloud computers don't grow on trees, so you'll also need to ensure sure you have sufficient <a href="https://docs.microsoft.com/en-us/azure/batch/batch-quota-limit">core quota</a> in the region you want to deploy in. The demo configuration by default uses 200 x D8s_v3 VM's, so 1600 cores. To make this simpler, we are using User Subscription Mode for Azure Batch, which means the VM's will run using the core quotas in your subscription, rather than Batch account specific quotas (required in "Batch Service" mode). 
 
 # Deeper Dive 
 

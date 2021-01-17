@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 source ../config/azfinsim.config
 AZFINSIM_REDIS_KEY=$(az keyvault secret show --name $AZFINSIM_REDIS_SECRET_ID --vault-name $AZFINSIM_KV_NAME --query "value" | tr -d '",')
 
