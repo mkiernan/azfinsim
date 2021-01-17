@@ -11,7 +11,7 @@ def getargs(progname):
     #-- Batch parameters
     parser.add_argument("-p","--pool-id", help="<name of the azure batch pool to submit the job to>")
     parser.add_argument("-j","--job-id", default="AzFinSimJob", help="<jobid prefix string>")
-    parser.add_argument("-t","--threads", type=int, default=1, help='number of client-side threads to use when submitting to batch')
+    parser.add_argument("-t","--threads", type=int, help='number of client-side threads to use when submitting to batch')
 
     #-- Cache parameters
     parser.add_argument("--cache-type", default="none", required=True,
