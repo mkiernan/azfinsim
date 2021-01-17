@@ -118,17 +118,15 @@ NB: Be careful how you manage both the terraform.tfstate and the azfinsim.config
 
 ## 2. Generate the Synthetic Trade Data
 
-For the Batch work we'll pre-fill the cache with trades (simulating an end of trading day data upload). We do this with the generator.sh script, which will PUT the trades directly into the Redis Cache.
+For the Batch work we'll pre-fill the cache with trades (simulating an end of trading day data upload). We do this with the generator.sh script, which will SET the trades directly into the Redis Cache.
 ```
 cd bin; ./generator.sh
 ```
-You can configure the generator.sh script to create as many trades as you like, and select the number of threads to speed things up as required. Example output creating 5 trades: 
+You can configure the generator.sh script to create as many trades as you like, and select the number of threads to speed things up as required. Example output:
 
 <img src=img/generator.JPG>
 
-100k trades will take around 5 mins, 1 million ~50 minutes depending on your client and latency. 
-
-You'll also notice the number of keys stored in redis has risen to 1 million (this image form the dashboard we created with terraform): 
+Creating 1 million trades will take around 3 minutes depending on your client and latency. The process is multithreaded and requests are generated and pipelined together for upload in batches of 10,000 by default. Once the process is complete, you'll notice the number of keys stored in redis has risen to 1 million (this image form the dashboard we created with terraform): 
 
 <img src=img/redispop.JPG> 
 
@@ -143,7 +141,9 @@ To authenticate with either of these tools you'll need the hostname or IP of you
 
 <img src=img/secrets.JPG>
 
-Just click on the AzFinSimRedisKey, current version and "Show Secret Value" - this is the password you need to login to Redis. Note also that the Terraform install has disabled the non-SSL port, so connect to port 6380. A script is also provided: "get_keys.sh" to make this easier. 
+Just click on the AzFinSimRedisKey, current version and "Show Secret Value" - this is the password you need to login to Redis. A script is also provided: "get_keys.sh" to make this easier from the command line. 
+
+Since this is a demo environment, the Terraform install has enabled the non-SSL port (redis-tools does not support SSL), so connect to port 6379. Alternatively you can use the "redis_conn.sh" helper script to connect directly without having to lookup the password/hostname/port. 
 
 ## 3. Build the Application Container
 The next step requires us to assemble the application into a container and push it to our container registry, so that it can subsequently be pulled into our Batch Pool. The application can be anything; in this case the azfinsim application is built in python, and we will package it up into a Docker container. The build.sh script does this according to the src/Dockerfile.azfinsim, creating a runtime environment for the azfinsim.py code which will be our execution engine on the Batch pool: 
@@ -156,7 +156,7 @@ sudo usermod -aG docker
 # logout/login
 id -nG
 ```
-### Test the Application Container
+### Optional: Test the Application Container Locally
 
 Once the container is built you can test it locally to ensure it is functioning, using the test_container.sh script provided - the output should look like this: 
 

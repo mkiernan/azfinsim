@@ -43,7 +43,7 @@ def create_trade_range(start_trade):
          for tradenum in range (start_trade, stop_trade): 
              keyname = "ey%007d.xml" % (tradenum)
              nbytes=1
-             xmlstring = xmlutils.GenerateTrade(tradenum,nbytes)
+             xmlstring = xmlutils.GenerateTradeEY(tradenum,nbytes)
              pipe.set(keyname,xmlstring) 
          log.info("Executing batch: %d-%d",start_trade,stop_trade)
          pipe.execute() 
