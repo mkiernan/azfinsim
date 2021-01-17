@@ -19,7 +19,7 @@ data "external" "batchservice" {
 
 #-- Register the application 
 resource "azuread_application" "azfinsim" {
-  display_name               = format("%s", var.prefix)
+  display_name               = "azfinsim"
   homepage                   = "https://github.com/mkiernan/azfinsim"
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = true

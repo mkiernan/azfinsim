@@ -23,7 +23,7 @@ az login
 # Deploy the infrastructure to Azure using terraform [~15 minutes]
 cd bin; ./deploy.sh
 
-# Generate 1,000,000 synthetic trades and inject into the redis cache [~60 minutes]
+# Generate 1,000,000 synthetic trades and inject into the redis cache [~2 minutes]
 ./generator.sh
 
 # Build the application container and push to the azure container registry [~3 minutes]
@@ -31,6 +31,9 @@ cd bin; ./deploy.sh
 
 # Submit batch jobs to process the trades [seconds]
 ./submit.sh 
+
+# Tear down the infrastructure [~10 minutes]
+./destroy.sh 
 ```
 
 ## Observe 

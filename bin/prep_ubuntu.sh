@@ -19,7 +19,7 @@ sudo apt-get -y update
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker $(whoami)
 
-sudo apt-get install jq
+sudo apt-get install -y jq redis-tools
 
 terraform -v
 az version

@@ -2,17 +2,17 @@
 
 usage()
 {
-    echo -e "\nUsage: $(basename $0) [--silent,-s <auto approve terraform destroy (default = prompt for approval)>]"
+    echo -e "\nUsage: $(basename $0) [-auto-approve <auto approve terraform destroy (default = prompt for approval)>]"
     exit 1
 } 
 
-silent=false
+autoapprove=false
 while [[ $# -gt 0 ]]
 do
    key="$1"
    case $key in
-      -s|--silent)
-         silent=true
+      -auto-approve)
+         autoapprove=true
          shift;
       ;;
       *)
@@ -23,11 +23,9 @@ do
 done
 
 pushd ../terraform > /dev/null
-
-if [ "$silent" = true  ]; then
-       terraform destroy -auto-approve
-else 
-       terraform destroy
+if [ "$autoapprove" = true  ]; then
+       terraform destroy -auto-approve -parallelism=30
+else  
+       terraform destroy -parallelism=30
 fi 
-
 popd > /dev/null

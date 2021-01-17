@@ -5,15 +5,15 @@ CONFIG=$CONFIGDIR/azfinsim.config
 
 deploy()
 {
-    silent=$1
+    autoapprove=$1
     echo "Starting Terraform..."
     terraform init
-    terraform plan
+    terraform plan -parallelism=30 
 
-    if [ "$silent" = true  ]; then
-       terraform apply -auto-approve
+    if [ "$autoapprove" = true  ]; then
+       terraform apply -auto-approve -parallelism=30
     else 
-       terraform apply
+       terraform apply -parallelism=30
     fi 
 }
 
@@ -115,17 +115,17 @@ check_env()
 
 usage()
 {
-    echo -e "\nUsage: $(basename $0) [--silent,-s <auto approve terraform apply (default = prompt for approval)>]"
+    echo -e "\nUsage: $(basename $0) [-auto-approve <auto approve terraform apply (default = prompt for approval)>]"
     exit 1
 } 
 
-silent=false
+autoapprove=false
 while [[ $# -gt 0 ]]
 do
    key="$1"
    case $key in
-      -s|--silent)
-         silent=true
+      -auto-approve)
+         autoapprove=true
          shift;
       ;;
       *)
@@ -137,6 +137,6 @@ done
 
 check_env 
 pushd ../terraform >/dev/null 
-deploy $silent 
+deploy $autoapprove
 generate_config
 popd >/dev/null 

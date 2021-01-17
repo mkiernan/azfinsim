@@ -3,6 +3,6 @@
 #-- execute all steps 
 ./deploy.sh --silent
 ./build.sh
-./generator.sh --silent
+./generator.sh
 ./submit.sh
 ./destroy.sh --silent
