@@ -20,7 +20,7 @@ sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker $(whoami)
 
 sudo apt-get install -y jq redis-tools python3-pip
-sudo pip3 install -r requirements.txt
+sudo pip3 install -r ../src/requirements.txt
 
 terraform -v
 az version
