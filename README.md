@@ -53,9 +53,9 @@ Telemetry is captured with Application Insights, and viewable in the <a href="ht
 <img src=img/dashboard.JPG> 
 
 
-# Pre-Requisites:  
+## Pre-Requisites:  
 
-## Tools
+### Tools
 Get <a href="https://azure.github.io/BatchExplorer/">Batch Explorer</a>, and <a href="https://azure.microsoft.com/en-us/features/storage-explorer/">Storage Explorer</a> and login to your Azure account via the UI's. 
 
 For launching the azfinsim commands <a href="https://ubuntu.com/blog/ubuntu-on-wsl-2-is-generally-available">Ubuntu 20.04 on WSL2</a> is highly recommended. You will need to install the following utilities: <a href="/en-us/cli/azure/install-azure-cli" data-linktype="absolute-path">Azure CLI</a>, docker-ce, terraform, redis-tools, jq & git. An <a href="https://github.com/mkiernan/azfinsim/blob/master/bin/prep_ubuntu.sh">ubuntu install script</a> is provided to install these packages for you. 
@@ -66,14 +66,14 @@ Another convenient launchpad for azfinsim is <a href=https://shell.azure.com/Azu
 
 NB: You will not be able to run the container creation step "build.sh" from the cloud shell as it does not have docker daemon support. You'll need to run the container build on another platform where you have docker installed as suggested above. 
 
-## Python Environment
+### Python Environment
 Whichever client you use, you will need to configure the python environment (either in your shell or use virtualenv): 
 ```
 sudo apt-get install -y python3-pip
 sudo pip3 install -r src/requirements.txt
 ```
 
-## CPU Core Quota
+### CPU Core Quota
 Ensure sure you have sufficient <a href="https://docs.microsoft.com/en-us/azure/batch/batch-quota-limit">core quota</a> in the region you want to deploy in. The demo configuration by default uses 200 x D8s_v3 VM's, so 1600 cores. To make this simpler, we are using User Subscription Mode for Azure Batch, which means the VM's will run using the core quotas in your subscription, rather than you needing to request Batch account specific quotas (required in "Batch Service" mode). If in doubt, open a core quota helpdesk ticket via the Azure Portal. 
 
 # Deeper Dive 
