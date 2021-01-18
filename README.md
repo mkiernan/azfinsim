@@ -147,7 +147,7 @@ user    0m2.853s
 sys     0m1.030s
 ```
 
-Once the process is complete, you'll notice the number of keys stored in redis has risen to 1 million (this image form the dashboard we created with terraform): 
+Once the process is complete, you'll notice the number of keys stored in redis has risen to 1 million (this image from the dashboard we created with terraform): 
 
 <img src=img/redispop.JPG width=50%,> 
 
@@ -207,7 +207,7 @@ This will submit 3 types of jobs to the autoscale pool which are documented in t
 ../src/submit.py --job-id "Sythetic50ms" --pool-id $POOL --start-trade 0 --trade-window $TRADES --tasks $TASKS --threads 100 --cache-type redis --cache-name $AZFINSIM_REDISHOST --cache-port $AZFINSIM_REDISPORT --cache-ssl yes --format eyxml --algorithm synthetic --task-duration 50 --mem-usage 16 --failure 0.0
 ```
 
-Feel free to edit the script and adjust the Pool, the number of trades to process and the number of tasks. Generally it's more efficient to group batches of trades together to send as a single task so that no compute time is wasted polling the batch queue for more work (the Azure Batch built-in scheduler is not designed for low-latency). In the default example, we process 1 million trades with 1000 trades per task. Thus if you have 1000 cores in your batch pool, each core will receive one task and will process 1000 trades each immediately. If you have only 100 cores in your pool, then 100 tasks will process the first 100,000 trades
+Feel free to edit the script and adjust the Pool, the number of trades to process and the number of tasks. Generally it's more efficient to group batches of trades together to send as a single task so that no compute time is wasted polling the batch queue for more work (the Azure Batch built-in scheduler is not designed for low-latency). In the default example, we process 1 million trades with 1000 trades per task. Thus if you have 1000 cores in your batch pool, each core will receive one task and will process 1000 trades each immediately. If you have only 100 cores in your pool, then 100 tasks will process the first 100,000 trades, and the other 900 jobs will be placed in the queue. 
 
 ### Viewing Running Jobs  
 
