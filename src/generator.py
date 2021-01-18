@@ -34,7 +34,7 @@ def create_trades(tradenum):
             xmlstring = xmlutils.GenerateTrade(tradenum,nbytes)
         utils.PutTrade(cache_type,"input",r,format,tradenum,xmlstring)
 
-#-- pipeline / batching method - 20X faster
+#-- pipeline / batching method 
 def create_trade_range(start_trade):
     batchsent=0
     stop_trade=start_trade+batchsize
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     log.info("Starting trade generator...")
 
     #-- pull keys/passwords from the keyvault
-    log.info("Reading kevault secrets")
+    log.info("Reading keyvault secrets")
     secrets.ReadKVSecrets()
     log.info("Done.")
 

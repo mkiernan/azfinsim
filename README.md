@@ -23,8 +23,8 @@ az login
 # Deploy the infrastructure to Azure using terraform [~15 minutes]
 ./deploy.sh
 
-# Generate 1,000,000 synthetic trades and inject into the redis cache [~2 minutes]
-./generator.sh
+# Inject 1,000,000 synthetic trades into the redis cache [~15 seconds]
+./inject.sh
 
 # Build the application container and push to the azure container registry [~3 minutes]
 ./build.sh
@@ -35,6 +35,8 @@ az login
 # Tear down the infrastructure [~10 minutes]
 ./destroy.sh 
 ```
+
+<i>*See below for an alternative method to load an existing dataset in 13 seconds</i>
 
 ## Observe 
 
@@ -118,17 +120,36 @@ NB: Be careful how you manage both the terraform.tfstate and the azfinsim.config
 
 ## 2. Generate the Synthetic Trade Data
 
-For the Batch work we'll pre-fill the cache with trades (simulating an end of trading day data upload). We do this with the generator.sh script, which will SET the trades directly into the Redis Cache.
+For the Batch work we'll pre-fill the cache with trades (simulating an end of trading day data upload). Two methods are provided to do this 1) Generate the trades [~40 minutes] 2) Inject an already created dataset [~15 seconds].
+
+### Method 1: Generate the Trades 
 ```
 cd bin; ./generator.sh
 ```
 You can configure the generator.sh script to create as many trades as you like, and select the number of threads to speed things up as required. Example output:
 
-<img src=img/generator.JPG>
+<img src=img/generator.JPG width=50%>
 
-Creating 1 million trades will take around 3 minutes depending on your client and latency. The process is multithreaded and requests are generated and pipelined together for upload in batches of 10,000 by default. Once the process is complete, you'll notice the number of keys stored in redis has risen to 1 million (this image form the dashboard we created with terraform): 
+Creating 1 million trades will take around 35 minutes depending on your client and latency. The process is multithreaded and requests are generated and pipelined together for upload in batches of 10,000 by default.
 
-<img src=img/redispop.JPG> 
+### Method 2: Mass Injection of an Existing Trade Dataset 
+
+For convenience a compressed dataset is provided "data/trades.gz" which can be directly injected into the cache with the "inject.sh" script. 
+```
+cd bin; ./inject.sh 
+Injecting 1 million trades into cache mkazcache.redis.cache.windows.net:6379
+All data transferred. Waiting for the last reply...
+Last reply received from server.
+errors: 0, replies: 1000000
+
+real    0m13.289s
+user    0m2.853s
+sys     0m1.030s
+```
+
+Once the process is complete, you'll notice the number of keys stored in redis has risen to 1 million (this image form the dashboard we created with terraform): 
+
+<img src=img/redispop.JPG width=50%,> 
 
 ### Connecting to Azure Redis Cache
 
