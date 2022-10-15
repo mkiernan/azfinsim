@@ -1,0 +1,11 @@
+[project]
+name = "azfinsim"
+version = "0.0.1"
+dependencies = [
+    "psutil",
+    "applicationinsights",
+    "pandas",
+    "numpy",
+    "scipy",
+    "redis"
+]
