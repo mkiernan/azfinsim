@@ -2,87 +2,12 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 import xml.etree.ElementTree as ET
-import string
-import random
 
-# CDATA hack
-def serialize_xml_with_CDATA(write, elem, qnames, namespaces, short_empty_elements, **kwargs):
-    ET._original_serialize_xml = ET._serialize_xml
-    if elem.tag == 'CDATA':
-        write("<![CDATA[{}]]>".format(elem.text))
-        return
-    ET._serialize_xml = ET._serialize['xml'] = serialize_xml_with_CDATA
-    return ET._original_serialize_xml(write, elem, qnames, namespaces, short_empty_elements, **kwargs)
-
-def CDATA(text):
-   element =  ET.Element("CDATA")
-   element.text = text
-   return element
-
-# xml pretty printer
-def indent(elem, level=0):
-  i = "\n" + level*"  "
-  if len(elem):
-    if not elem.text or not elem.text.strip():
-      elem.text = i + "  "
-    if not elem.tail or not elem.tail.strip():
-      elem.tail = i
-    for elem in elem:
-      indent(elem, level+1)
-    if not elem.tail or not elem.tail.strip():
-      elem.tail = i
-  else:
-    if level and (not elem.tail or not elem.tail.strip()):
-      elem.tail = i
-
-def id_generator(size=8, chars=string.ascii_uppercase + string.digits):
-	return ''.join(random.choice(chars) for _ in range(size))
-
-def GenerateTrade(tradenum,nbytes):
+def GenerateTradeEY(tradenum, N):
     # just use the time now
     today = dt.date.today()
     stoday = "%s" % (today)
 
-    tradeformatted = "%010d" % tradenum
-
-    root = ET.Element("AZFINSIMTRADE")
-    trade = ET.SubElement(root, "AzFinsimSyntheticTradeData")
-    trade.set("id",tradeformatted)
-    trade.set("tradeType","SWAP")
-    trade.set("process","iso")
-    trade.set("location","Mars")
-    trade.set("businessDate",stoday)
-
-    #-- create random CDATA serial stream
-    randbuf = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(nbytes))
-    #print randbuf
-    #print random.getrandbits(1024)
-
-    data = ET.SubElement(trade, "AdditionalData", type="azfinsim01")
-    data.append(CDATA(randbuf))
-
-    tdata = ET.SubElement(trade, "AdditionalData", type="azfinsim02")
-    qldata = ET.SubElement(tdata, "QuantLib")
-    assets = ET.SubElement(qldata, "Assets")
-    stream = ET.SubElement(assets, "swapStream")
-    swapStreamID = id_generator()
-    stream.set("id",swapStreamID)
-
-    formulae = ET.SubElement(stream, "FORMULAE", Asset_ProductName="FWDBOND")
-    formula = ET.SubElement(formulae, "Formula", Asset_Formula_Date=stoday, Asset_Formula="FWDBOND US12345ORG89")
-
-    indent(root)
-    tree = ET.ElementTree(root)
-    #tree.write('filename.xml', xml_declaration=True, encoding='utf-8', method="xml")
-    xmlstring = ET.tostring(root, encoding="utf-8", method="xml")
-    return(xmlstring)
-
-def GenerateTradeEY(tradenum,N):
-    # just use the time now
-    today = dt.date.today()
-    stoday = "%s" % (today)
-
-    tradeformatted = "%010d" % tradenum
     newFile = {}
     newFile['fx1'] = np.random.rand(N)*0.12+0.8285
 
@@ -110,14 +35,11 @@ def GenerateTradeEY(tradenum,N):
     newFile['strike'] = np.random.rand(N)*0.12 + 0.7
  
     newFile = pd.DataFrame.from_dict(newFile)
-    #newFile.to_csv('XXXX.csv')
 
-    #aroot = etree.Element('data');
-    root = ET.Element("AZFINSIM")
-
-    for i,row in newFile.iterrows():
+    for i, row in newFile.iterrows():
         #print(row['fx1'],row['start_date'],row['drift'],row['maturity'],row['t_steps'],row['trials'])
         #print(row['ro'],row['v'],row['sigma1'],row['warrantsNo'],row['notionalPerWarr'],row['strike'])
+        root = ET.Element("AZFINSIM")
         trade = ET.SubElement(root, "trade",
                               fx1 = "%.16f" % (row['fx1']), 
                               start_date = "%s" % (row['start_date']),
@@ -133,14 +55,10 @@ def GenerateTradeEY(tradenum,N):
                               notionalPerWarr = "%2.16f" % (row["notionalPerWarr"]),
                               strike = "%2.16f" % (row["strike"])
                              )
-        trade.text = tradeformatted
-
-    indent(root)
-    #ET.dump(root);
-    tree = ET.ElementTree(root)
-    #tree.write('filename.xml', xml_declaration=True, encoding='utf-8', method="xml")
-    xmlstring = ET.tostring(root, encoding="utf-8", method="xml")
-    return(xmlstring)
+        trade.text = "%010d" % (tradenum + i)
+        xml_data = ET.tostring(root, encoding="utf-8", method="xml")
+        key = "ey%007d.xml" % (tradenum + i)
+        yield key, xml_data
 
 def xml_to_dataframe(elem):
     fx1 = float(elem.get('fx1'))

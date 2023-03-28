@@ -1,37 +1,7 @@
-import redis 
-#import hazelcast
 import logging
 import random
 
-from . import azlog
-
-log = azlog.getLogger(__name__)
-
-def SetupCacheConn(type,ip,port,key,ssl):
-    if (type=="redis"): 
-        if (ssl=="yes"): 
-            r=SetupRedisSSLConn(ip,port,key)
-        else: 
-            r=SetupRedisConn(ip,port,key)
-    else:
-        print("working on it. not yet supported...")
-    return r
-
-def SetupRedisConn(ip,port,key):
-    r = redis.Redis(
-    host=ip,
-    port=port,
-    password=key)
-    return r
-
-def SetupRedisSSLConn(ip,port,key):
-    r = redis.StrictRedis(
-    host=ip,
-    port=port,
-    password=key,
-    ssl_cert_reqs=u'none', #-- or specify location of certs
-    ssl=True)
-    return r
+log = logging.getLogger(__name__)
 
 def GetTrade(r,keyname):
     xmlstring = r.get(keyname)

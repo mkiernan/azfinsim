@@ -5,7 +5,6 @@ from an optionally specified config file.
 """
 import argparse
 import json
-from unicodedata import name
 
 class ArgumentsAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string):
@@ -22,6 +21,14 @@ class ArgumentsAction(argparse.Action):
                 else:
                     parser.parse_known_args(['--' + key, value], namespace=namespace)
 
+class ParseTagsAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string):
+        tags = {}
+        for tag in values.split(','):
+            key, value = tag.split('=')
+            tags[key.strip()] = value.strip()
+        setattr(namespace, self.dest, tags)
+
 def getargs(progname):
 
     parser = argparse.ArgumentParser(progname)
@@ -33,17 +40,21 @@ def getargs(progname):
     #-- Cache parameters
     cacheParser = parser.add_argument_group('Cache', 'Cache-specific options')
     cacheParser.add_argument("--cache-type", default="redis",
-                             choices=['redis','filesystem','none'],
+                             choices=['redis','filesystem'],
                              help="cache type (default: redis)"),
-    cacheParser.add_argument("--cache-name", help="<redis or filesystem hostname/ip (port must be open)>")
-    cacheParser.add_argument("--cache-port", default=6380, type=int, help="redis port number (default=6380 [SSL])")
-    cacheParser.add_argument("--cache-key", help="cache access key")
-    cacheParser.add_argument("--cache-ssl", default="yes", choices=['yes','no'], help="use SSL for redis cache access (default: yes)")
-    cacheParser.add_argument("--cache-path", help="Cache Filesystem Path (not needed for redis")
+    
+    redisParser = parser.add_argument_group('Redis Cache', 'Redis Cache-specific options (when --cache-type=redis)')
+    redisParser.add_argument("--cache-name", help="redis hostname/ip address")
+    redisParser.add_argument("--cache-port", default=6380, type=int, help="redis port number (default=6380 [SSL])")
+    redisParser.add_argument("--cache-key", help="cache access key")
+    redisParser.add_argument("--cache-ssl", default="yes", choices=['yes','no'], help="use SSL for redis cache access (default: yes)")
+
+    fsParser = parser.add_argument_group('Filesystem Cache', 'Filesystem Cache-specific options (when --cache-type=filesystem)')
+    fsParser.add_argument("--cache-path", help="filesystem path for cache")
 
     #-- algorithm/work per thread
     workParser = parser.add_argument_group('Trades', 'Trade-specific options')
-    workParser.add_argument("-f", "--format", default="eyxml", choices=['varxml','eyxml'],help="format of trade data (default: eyxml)")
+    workParser.add_argument("-f", "--format", default="eyxml", choices=['eyxml'],help="format of trade data (default: eyxml)")
     workParser.add_argument("-s", "--start-trade", default=0, type=int, help="trade range to process: starting trade number (default: 0)")
     workParser.add_argument("-w", "--trade-window", default=0, type=int, help="number of trades to process (default: 0)")
 
@@ -58,7 +69,15 @@ def getargs(progname):
         algoParser.add_argument("--task-duration", type=int, default=20, help="task duration in milliseconds (default: 20)")
         algoParser.add_argument("--failure", type=float, default=0.0, help="inject random task failure with this probability (default: 0.0)")
 
-        #-- logs & metrics
-        parser.add_argument("--appinsights-key", help="Azure Application Insights Key")
+    #-- logs & metrics
+    insightsParser = parser.add_argument_group('Azure Application Insights', 'Azure Application Insights-specific options')
+    insightsParser.add_argument("-i", "--app-insights",
+        help="Azure Application Insights Connection String", type=str, default=None)
+    insightsParser.add_argument("--tags", help="tags to add to metrics; a comma-separated key=value pairs are expected",
+                                action=ParseTagsAction, default={})
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    from . import process_args
+    process_args(args)
+    return args

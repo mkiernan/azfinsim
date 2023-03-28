@@ -5,7 +5,6 @@ RUN apk add --no-cache \
     py3-pip     \
     py3-psutil  \
     py3-redis   \
-    py3-scipy   \
     python3
 RUN python3 -m pip install --upgrade pip
 

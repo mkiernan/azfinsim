@@ -2,10 +2,10 @@
 name = "azfinsim"
 version = "0.0.1"
 dependencies = [
-    "psutil",
-    "applicationinsights",
-    "pandas",
+    "colorlog",
     "numpy",
-    "scipy",
+    "opencensus-ext-azure",
+    "pandas",
+    "psutil",
     "redis"
 ]
