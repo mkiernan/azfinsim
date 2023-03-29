@@ -145,7 +145,7 @@ def price_option(inputs):
             netSettlement[i] = cashSetAm[i] * 1.000799081
     
      #netSettlement netSettlement[i] = (cashSetAm[i] - warrantsPrice) * np.exp(-drift * delta.days / 365)= Cash Settlement(t0) - Warrant Price(t0)
-    return [netSettlement.mean(), (time.time() - start_time)]
+    return (netSettlement.mean(), (time.time() - start_time))
 
 def risk(parameter, inputs, alpha = 0.01):
 

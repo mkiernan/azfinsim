@@ -3,45 +3,11 @@ import random
 
 log = logging.getLogger(__name__)
 
-def GetTrade(r,keyname):
-    xmlstring = r.get(keyname)
-    return xmlstring
-
-'''  cachetype = redis, nfs etc.
-     io = "input" or "output"
-     r = redis handle
-     format = eyxml or varxml
-     tradenum = trade number
-     xmlstring = the trade xml data
-'''
-def PutTrade(cache_type,io,r,format,tradenum,xmlstring):
-    if (format == "eyxml"):
-        prefix = "ey"
-    elif (format == "varxml"):
-        prefix = "var"
-    else:
-        log.error("invalid format: %s" % format)
-        return(1)
-
-    if (io == "input"):
-        keyname = "%s%007d.xml" % (prefix, tradenum)
-    elif (io == "output"):
-        keyname = "%s%007d_result.xml" % (prefix, tradenum)
-    else: 
-        log.error("File format: %s; input/output only supported. " % format)
-        return(1)
-
-    if (cache_type=="redis"):
-        r.set(keyname,xmlstring)
-
-    log.debug("Trade %d: written as: %s:\n%s" % (tradenum,keyname,xmlstring))
-
-    return r
-
 def InjectRandomFail(failure):
     if random.uniform(0.0, 1.0) < failure:
-       logging.error("RANDOM ERROR INJECTION: TASK EXIT WITH ERROR")
-       return(1)
+       log.error("RANDOM ERROR INJECTION: TASK EXIT WITH ERROR")
+       return True
+    return False
 
 def DoFakeCompute(xmlstring,delay_time,task_duration,mem_usage):
     import numpy as np

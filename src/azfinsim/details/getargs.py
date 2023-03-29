@@ -54,7 +54,6 @@ def getargs(progname):
 
     #-- algorithm/work per thread
     workParser = parser.add_argument_group('Trades', 'Trade-specific options')
-    workParser.add_argument("-f", "--format", default="eyxml", choices=['eyxml'],help="format of trade data (default: eyxml)")
     workParser.add_argument("-s", "--start-trade", default=0, type=int, help="trade range to process: starting trade number (default: 0)")
     workParser.add_argument("-w", "--trade-window", default=0, type=int, help="number of trades to process (default: 0)")
 

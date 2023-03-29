@@ -57,8 +57,7 @@ def GenerateTradeEY(tradenum, N):
                              )
         trade.text = "%010d" % (tradenum + i)
         xml_data = ET.tostring(root, encoding="utf-8", method="xml")
-        key = "ey%007d.xml" % (tradenum + i)
-        yield key, xml_data
+        yield trade_key(tradenum +i ), xml_data
 
 def xml_to_dataframe(elem):
     fx1 = float(elem.get('fx1'))
@@ -93,3 +92,9 @@ def ParseEYXML(xmlstring):
     #drift = trade_data.loc[0,'drift']
     #print(drift)
     return(trade_data)
+
+def trade_key(tradenum):
+    return "ey%007d.xml" % (tradenum)
+
+def results_key(tradenum):
+    return "ey%007d_results.xml" % (tradenum)

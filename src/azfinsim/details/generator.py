@@ -6,8 +6,8 @@ import math
 import time
 import psutil
 import logging
-import datetime
 from multiprocessing.pool import ThreadPool
+
 from . import xmlutils, cache
 from .metrics import Metrics
 
@@ -90,7 +90,6 @@ def execute(args):
     end=time.perf_counter()
 
     timedelta=end-start
-    log.info("Done.")
     log.info("Cache filled with %d trades in %.12f seconds" % (args.trade_window, timedelta))
     
     metrics.put("execution_time", timedelta)
